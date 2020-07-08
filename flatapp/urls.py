@@ -7,7 +7,7 @@ from .views import PreferenceViewset
 
 
 router = DefaultRouter()
-router.register(r'preferences/', PreferenceViewset, basename='preference')
+router.register(r'preferences', PreferenceViewset, basename='preference')
 
 
 urlpatterns = [
