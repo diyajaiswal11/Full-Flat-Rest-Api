@@ -9,6 +9,12 @@ property_choices= (
     ("Studio","Studio"),
 )
 
+nullboolean = (
+    (None, "Null"),
+    (True, "True"),
+    (False, "False")
+)
+
 class PropertyAmenities(models.Model):
     name=models.CharField(max_length=50)
 
@@ -32,6 +38,7 @@ class RoomPreference(models.Model):
     maximumbudget=models.IntegerField(default=0,validators=[MaxValueValidator(50000),MinValueValidator(0)])
     propertyamenities=models.ManyToManyField(PropertyAmenities,related_name='propertyamenities')
     rules=models.ManyToManyField(Rules,related_name='rules')
+    checked=models.NullBooleanField(choices=nullboolean,default=None)
 
     def __str__(self):
         return self.propertytype
