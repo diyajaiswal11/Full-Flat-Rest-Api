@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import RoomPreference, Rules, PropertyAmenities
+from .models import RoomPreference, Rules, PropertyAmenities, User, Payment
 
 
 class RoomPreferenceSerializer(serializers.ModelSerializer):
@@ -22,6 +22,19 @@ class PropertyAmenitiesSerializer(serializers.ModelSerializer):
         model=PropertyAmenities
         fields=('name','propertyamenities',)
         extra_kwargs = {'propertyamenities': {'required': False}}
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=('fname','lname',)
+        
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Payment
+        fields='__all__'
+
 
 
 

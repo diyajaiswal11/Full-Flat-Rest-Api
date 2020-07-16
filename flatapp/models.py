@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
+from django.utils import timezone
 
 # Create your models here.
 property_choices= (
@@ -14,6 +15,14 @@ nullboolean = (
     (True, "True"),
     (False, "False")
 )
+
+payment_status_choices = (
+    ("No Plan Chosen","No Plan Chosen"),
+    ("Plan Activated","Plan Activated"),
+    ("Plan Expired","Plan Expired"),
+)
+
+
 
 class PropertyAmenities(models.Model):
     name=models.CharField(max_length=50)
@@ -39,7 +48,37 @@ class RoomPreference(models.Model):
     propertyamenities=models.ManyToManyField(PropertyAmenities,related_name='propertyamenities')
     rules=models.ManyToManyField(Rules,related_name='rules')
     checked=models.NullBooleanField(choices=nullboolean,default=None)
+    paid=models.BooleanField(default=False)
 
     def __str__(self):
         return self.propertytype
+
+
+
+
+class User(models.Model):
+    fname=models.CharField(max_length=20)
+    lname=models.CharField(max_length=20)
+    paid=models.BooleanField(default=False)
+    plan_id=models.IntegerField(default=0)
+    payment_status=models.CharField(choices=payment_status_choices,default="No Plan Chosen",max_length=30)
+    paid_date=models.DateField(default=date.today)
+    paid_amount=models.IntegerField(default=0)
+    plan_validity=models.IntegerField(default=0)
+       
+
+    def __str__(self):
+        return self.fname
+
+
+
+class Payment(models.Model):
+    payment_id=models.CharField(max_length=50)
+    user_id=models.IntegerField(default=0)
+    plan_id=models.IntegerField(default=0)
+    payment_date=models.DateField(default=date.today)
+
+    
+
+
 
