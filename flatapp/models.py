@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from datetime import date
+from datetime import date, datetime
 from django.utils import timezone
+
 
 # Create your models here.
 property_choices= (
@@ -22,6 +23,26 @@ payment_status_choices = (
     ("Plan Expired","Plan Expired"),
 )
 
+class Payment(models.Model):
+    payment_id=models.CharField(max_length=50)
+    user_id=models.IntegerField(default=0)
+    plan_id=models.IntegerField(default=0)
+    plan_validity=models.IntegerField(default=0)
+    payment_date=models.DateField(default=date.today)
+    payment_status=models.CharField(choices=payment_status_choices,default="No Plan Chosen",max_length=30)
+    paid=models.BooleanField(default=False)
+    paid_amount=models.IntegerField(default=0)
+    expiration_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    
+    def save(self, *args, **kw):
+        if self.expiration_date < timezone.now().date():
+            self.paid = False
+        super(Payment, self).save(*args, **kw)
+
+    def __str__(self):
+        return '%s'  % (self.plan_id)
+
+    
 
 
 class PropertyAmenities(models.Model):
@@ -59,12 +80,12 @@ class RoomPreference(models.Model):
 class User(models.Model):
     fname=models.CharField(max_length=20)
     lname=models.CharField(max_length=20)
-    paid=models.BooleanField(default=False)
-    plan_id=models.IntegerField(default=0)
-    payment_status=models.CharField(choices=payment_status_choices,default="No Plan Chosen",max_length=30)
-    paid_date=models.DateField(default=date.today)
-    paid_amount=models.IntegerField(default=0)
-    plan_validity=models.IntegerField(default=0)
+    #paid=models.BooleanField(default=False)
+    plan_id=models.ForeignKey(Payment, on_delete=models.DO_NOTHING)
+    #payment_status=models.CharField(choices=payment_status_choices,default="No Plan Chosen",max_length=30)
+    #paid_date=models.DateField(default=date.today)
+    #paid_amount=models.IntegerField(default=0)
+    #plan_validity=models.IntegerField(default=0)
        
 
     def __str__(self):
@@ -72,13 +93,6 @@ class User(models.Model):
 
 
 
-class Payment(models.Model):
-    payment_id=models.CharField(max_length=50)
-    user_id=models.IntegerField(default=0)
-    plan_id=models.IntegerField(default=0)
-    payment_date=models.DateField(default=date.today)
-
-    
 
 
 
